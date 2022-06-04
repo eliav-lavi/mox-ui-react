@@ -5,44 +5,48 @@ import { TextField } from '@mui/material';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import { useEffect, useState } from 'react';
-
 import { FieldItem } from '../design/form-fields';
+import { defaultEndpointForm2, SleepTimeForm } from '../model/endpoint-form.model';
 
 
 export type SleepType = 'none' | 'fixed' | 'range'
 export type SleepTime = { min: string, max: string }
-export type SleepTimeData = SleepTime & { sleepType: SleepType }
 
-export function SleepTimeControl(props: { sleepTimeData: SleepTimeData, onChange: (sleepTimeData: SleepTimeData) => void }) {
-  const { sleepType, min, max } = props.sleepTimeData
+export function SleepTimeControl(props: { sleepTimeData: SleepTimeForm, onChange: (sleepTimeData: SleepTimeForm) => void }) {
   const { onChange } = props
-  const [currentSleepTimeData, setCurrentSleepTimeData] = useState<SleepTimeData>({ min, max, sleepType })
-  // const [currentSleepTime, setSleepTime] = useState<SleepTime>({ min, max })
-  // const [currentSleepTimeData.sleepType, setSleepType] = useState<SleepType>(sleepType);
+  const [currentSleepTimeData, setCurrentSleepTimeData] = useState<SleepTimeForm>(props.sleepTimeData)
+  const [initDone, setInitDone] = useState(false)
+
+  /* 
+   * These 2 effects help with the problem of using `useState` from passed props (initial data)
+   * together with subscribing the passed `onChange` to state changes.
+   * Ideally there's another way to do that.
+   */
+  useEffect(() => {
+    if (!!initDone || props.sleepTimeData === defaultEndpointForm2.sleepTime) {
+      return
+    }
+    setCurrentSleepTimeData(props.sleepTimeData)
+    setInitDone(true)
+  }, [props, initDone])
 
   useEffect(() => {
-    setCurrentSleepTimeData({ min, max, sleepType })
-    // setSleepTime({ min, max })
-    // setSleepType(sleepType)
-  }, [min, max, sleepType])
-
+    if (!initDone) {
+      return
+    }
+    onChange(currentSleepTimeData)
+  }, [currentSleepTimeData, initDone])
 
   const handleSleepType = (_: React.MouseEvent<HTMLElement>, newSleepType: SleepType) => {
-    if (!!newSleepType) {
-      setCurrentSleepTimeData({ ...currentSleepTimeData, sleepType: newSleepType });
-      // if(sleepType === 'fixed') {
-      //   setSleepTime({min: currentSleepTime.min ,max: ''})
-      // }
-      // if(sleepType === 'none') {
-      //   setSleepTime({min: '', max: ''})
-      // }
-    }
+    setCurrentSleepTimeData({ ...currentSleepTimeData, sleepType: newSleepType });
   };
 
   return (
     <>
       <FieldItem flex={0}>
-        <ToggleButtonGroup value={currentSleepTimeData.sleepType} exclusive onChange={handleSleepType} size='small'>
+        <ToggleButtonGroup value={currentSleepTimeData.sleepType} exclusive
+          onChange={handleSleepType}
+          size='small'>
           <ToggleButton value="none">
             <TimerOffOutlinedIcon />
           </ToggleButton>
@@ -58,7 +62,10 @@ export function SleepTimeControl(props: { sleepTimeData: SleepTimeData, onChange
         <TextField
           fullWidth
           value={currentSleepTimeData.min}
-          onChange={(e) => { setCurrentSleepTimeData({ ...currentSleepTimeData, min: e.target.value }); onChange(currentSleepTimeData) }}
+          onChange={(e) => {
+            setCurrentSleepTimeData({ ...currentSleepTimeData, min: e.target.value })
+          }
+          }
           style={{ minWidth: '200px' }}
           size='small'
           disabled={currentSleepTimeData.sleepType === 'none'}
@@ -72,13 +79,15 @@ export function SleepTimeControl(props: { sleepTimeData: SleepTimeData, onChange
             fullWidth
             inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
             value={currentSleepTimeData.max}
-            onChange={(e) => { setCurrentSleepTimeData({ ...currentSleepTimeData, max: e.target.value }); onChange(currentSleepTimeData) }}
+            onChange={(e) => {
+              setCurrentSleepTimeData({ ...currentSleepTimeData, max: e.target.value })
+            }
+            }
             style={{ minWidth: '200px' }}
             size='small'
             label="Max Response Time"
           ></TextField>
-        </FieldItem>
-      }
+        </FieldItem>}
     </>
   );
 

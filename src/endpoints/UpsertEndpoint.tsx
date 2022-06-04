@@ -1,16 +1,16 @@
-import { Button, MenuItem, TextField } from "@mui/material"
+import { Button } from "@mui/material"
 import { useEffect, useState } from "react"
 import styled from "styled-components"
 import { FieldItem, FieldRow } from "../design/form-fields"
-import { defaultEndpointForm, EndpointForm } from "../model/endpoint-form.model"
+import { defaultEndpointForm2, EndpointForm2, MainForm, SleepTimeForm } from "../model/endpoint-form.model"
 import { Endpoint, PersistedEndpoint } from "../model/endpoint.model"
 import { transformToEndpoint, transformToForm } from "../services/form-transformations"
 import { showEndpoint, submitCreateEndpointAsync, submitUpdateEndpointAsync } from "../state/endpointsSlice"
 import { useAppDispatch } from "../state/hooks"
-import { SleepTime, SleepTimeControl, SleepTimeData, SleepType } from "./SleepTimeControl"
+import { MainControl } from "./MainControl"
+import { SleepTimeControl } from "./SleepTimeControl"
 
 
-const verbs = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']
 
 const Form = styled.div`
   display: flex;
@@ -22,12 +22,21 @@ const Form = styled.div`
 export function UpsertEndpoint(props: { persistedEndpoint?: PersistedEndpoint }) {
   const dispatch = useAppDispatch()
   const { persistedEndpoint } = props
-  const [endpoint, setEndpointData] = useState<EndpointForm>(defaultEndpointForm)
-  const [sleepTimeControl, setSleepTimeControl] = useState<SleepTimeData | undefined>(undefined)
+  const [endpointForm, setEndpointForm] = useState<EndpointForm2>(defaultEndpointForm2)
+  const [mainDataControl, setMainDataControl] = useState<MainForm>(defaultEndpointForm2.main)
+  const [sleepTimeDataControl, setSleepTimeDataControl] = useState<SleepTimeForm>(defaultEndpointForm2.sleepTime)
 
-  // TODO: is there a better way to do this? (the `else` is annoying)
   useEffect(() => {
-    !!persistedEndpoint ? setEndpointData(transformToForm(persistedEndpoint)) : setEndpointData(defaultEndpointForm)
+    if (!!persistedEndpoint) {
+      const endpointForm2 = transformToForm(persistedEndpoint)
+      setEndpointForm(endpointForm2)
+      setMainDataControl(endpointForm2.main)
+      setSleepTimeDataControl(endpointForm2.sleepTime)
+    } else {
+      setEndpointForm(defaultEndpointForm2)
+      setMainDataControl(defaultEndpointForm2.main)
+      setSleepTimeDataControl(defaultEndpointForm2.sleepTime)
+    }
   }, [persistedEndpoint])
 
   /*
@@ -36,17 +45,17 @@ export function UpsertEndpoint(props: { persistedEndpoint?: PersistedEndpoint })
    */
   const handleCancel: () => void = () => dispatch(showEndpoint(persistedEndpoint!.id))
   const handleCreate: () => void = () => {
-    const formAsEndpoint = transformToEndpoint(endpoint, sleepTimeControl!) // might throw
+    const formAsEndpoint = transformToEndpoint({ main: mainDataControl, sleepTime: sleepTimeDataControl }) // might throw
     dispatch(submitCreateEndpointAsync({ endpoint: formAsEndpoint }))
   }
   const handleUpdate: () => void = () => {
-    const formAsEndpoint = transformToEndpoint(endpoint, sleepTimeControl!) // might throw
+    const formAsEndpoint = transformToEndpoint({ main: mainDataControl, sleepTime: sleepTimeDataControl }) // might throw
     dispatch(submitUpdateEndpointAsync({ id: persistedEndpoint!.id, endpoint: formAsEndpoint }))
   }
 
   function handleChangeValue(key: keyof Endpoint) {
     return (event: React.ChangeEvent<HTMLInputElement>) => {
-      setEndpointData({ ...endpoint, [key]: event.target.value });
+      setMainDataControl({ ...mainDataControl, [key]: event.target.value });
     }
   };
 
@@ -76,52 +85,18 @@ export function UpsertEndpoint(props: { persistedEndpoint?: PersistedEndpoint })
   }
 
   return (
-    <>
-      <Form>
-        <div>
-          <FieldRow>
-            <FieldItem flex={3}>
-              <TextField fullWidth select label="Verb" defaultValue={'GET'} value={endpoint.verb} onChange={handleChangeValue('verb')}>
-                {verbs.map(verb => <MenuItem key={verb} value={verb}>{verb}</MenuItem>)}
-              </TextField>
-            </FieldItem>
-            <FieldItem flex={15}>
-              <TextField fullWidth label="Path" value={endpoint.path} onChange={handleChangeValue('path')}></TextField>
-            </FieldItem>
-            <FieldItem flex={3}>
-              <TextField fullWidth label="Status Code" value={endpoint.statusCode} onChange={handleChangeValue('statusCode')}></TextField>
-            </FieldItem>
-          </FieldRow>
-          <FieldRow>
-            <TextField
-              multiline
-              fullWidth
-              minRows={8}
-              maxRows={10}
-              label="Return Value"
-              value={endpoint.returnValue}
-              inputProps={{ style: { fontFamily: 'monospace' } }}
-              onChange={handleChangeValue('returnValue')}></TextField>
-          </FieldRow>
-          <FieldRow justifyContent="space-between">
-            <FieldRow justifyContent="start">
-              <SleepTimeControl
-                sleepTimeData={{ min: endpoint.minResponseMillis, max: endpoint.maxResponseMillis, sleepType: endpoint.sleepType }}
-                onChange={setSleepTimeControl}
-              />
-            </FieldRow>
-            <FieldRow justifyContent="end">
-
-            </FieldRow>
-          </FieldRow>
-        </div>
-        <div>
-          <FieldRow justifyContent="end">
-            <Controls />
-          </FieldRow>
-        </div>
-      </Form>
-    </>
-
+    <Form>
+      <div>
+        <MainControl mainData={endpointForm.main} onChange={setMainDataControl} />
+        <FieldRow justifyContent="start">
+          <SleepTimeControl sleepTimeData={endpointForm.sleepTime} onChange={setSleepTimeDataControl} />
+        </FieldRow>
+      </div>
+      <div>
+        <FieldRow justifyContent="end">
+          <Controls />
+        </FieldRow>
+      </div>
+    </Form>
   )
 }

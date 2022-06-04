@@ -1,18 +1,18 @@
 import { SleepType } from "../endpoints/SleepTimeControl"
 
 export interface EndpointForm2 {
-  main: Main,
-  sleepTime: SleepTime
+  main: MainForm,
+  sleepTime: SleepTimeForm
 }
 
-export interface Main {
+export interface MainForm {
   verb: string,
   path: string,
   returnValue: string,
   statusCode: string,
 }
 
-export interface SleepTime {
+export interface SleepTimeForm {
   sleepType: SleepType
   min: string,
   max: string,
@@ -29,13 +29,24 @@ export interface EndpointForm {
   maxResponseMillis: string,
 }
 
-export const defaultEndpointForm: EndpointForm = {
+export const defaultEndpointForm2: EndpointForm2 = {
+  main: {
+    verb: '',
+    path: '',
+    returnValue: '',
+    statusCode: ''
+  },
+  sleepTime: {
+    sleepType: 'none',
+    min: '',
+    max: ''
+  }
+}
+
+export const defaultEndpointForm: MainForm = {
   verb: '',
   path: '',
   returnValue: '',
   statusCode: '',
-  headers: {},
-  sleepType: 'none',
-  minResponseMillis: '',
-  maxResponseMillis: '',
+
 }

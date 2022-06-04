@@ -1,7 +1,7 @@
 import { Button } from "@mui/material"
 import { useEffect, useState } from "react"
 import { FieldItem } from "../design/form-fields"
-import { defaultEndpointForm, EndpointForm } from "../model/endpoint-form.model"
+import { defaultEndpointForm, defaultEndpointForm2, EndpointForm, EndpointForm2 } from "../model/endpoint-form.model"
 import { PersistedEndpoint } from "../model/endpoint.model"
 import { transformToForm } from "../services/form-transformations"
 import { editEndpoint, submitDeleteEndpointAsync } from "../state/endpointsSlice"
@@ -10,14 +10,14 @@ import { useAppDispatch } from "../state/hooks"
 
 export function ShowEndpoint(props: { persistedEndpoint: PersistedEndpoint }) {
   const dispatch = useAppDispatch()
-  const [endpoint, setEndpointData] = useState<EndpointForm>(defaultEndpointForm)
+  const [endpointData, setEndpointData] = useState<EndpointForm2>(defaultEndpointForm2)
+
+  // const [endpoint, setEndpointData] = useState<EndpointForm>(defaultEndpointForm)
 
   const { persistedEndpoint } = props
 
   const handleEdit: () => void = () => dispatch(editEndpoint(persistedEndpoint.id))
   const handleDelete: () => void = () => dispatch(submitDeleteEndpointAsync({ id: persistedEndpoint.id }))
-  // TODO: looks like bad design
-  const doNothing: () => void = () => { }
 
   useEffect(() => {
     setEndpointData(transformToForm(persistedEndpoint))
@@ -27,7 +27,7 @@ export function ShowEndpoint(props: { persistedEndpoint: PersistedEndpoint }) {
   return (
     <>
       <code>
-        {JSON.stringify(endpoint, null, 4)}
+        {JSON.stringify(endpointData, null, 4)}
       </code>
       <>
         <FieldItem flex={0}>

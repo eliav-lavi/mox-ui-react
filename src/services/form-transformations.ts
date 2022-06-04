@@ -1,38 +1,53 @@
 import { beautifyJson } from "../design/format.utils";
-import { SleepTime, SleepTimeData, SleepType } from "../endpoints/SleepTimeControl";
-import { EndpointForm } from "../model/endpoint-form.model";
+import { SleepTime, SleepType } from "../endpoints/SleepTimeControl";
+import { EndpointForm2 } from "../model/endpoint-form.model";
 import { Endpoint } from "../model/endpoint.model";
 
-export function transformToForm(endpoint: Endpoint): EndpointForm {
+export function transformToForm(endpoint: Endpoint): EndpointForm2 {
   const min = endpoint.minResponseMillis?.toString() || ''
   const max = endpoint.maxResponseMillis?.toString() || ''
-  return {
-    ...endpoint,
-    statusCode: endpoint.statusCode.toString(),
+
+  const main = {
+    verb: endpoint.verb,
+    path: endpoint.path,
     returnValue: beautifyJson(endpoint.returnValue),
+    statusCode: endpoint.statusCode.toString(),
+  }
+  const sleepTime = {
     sleepType: inferSleepType({ min, max }),
-    maxResponseMillis: max,
-    minResponseMillis: min
+    max,
+    min
+  }
+  return {
+    main,
+    sleepTime,
+    // ...endpoint,
+    // statusCode: endpoint.statusCode.toString(),
+    // returnValue: beautifyJson(endpoint.returnValue),
+    // sleepType: inferSleepType({ min, max }),
+    // maxResponseMillis: max,
+    // minResponseMillis: min
   }
 }
 
-export function transformToEndpoint(endpointForm: EndpointForm, sleepTimeData: SleepTimeData): Endpoint {
+export function transformToEndpoint(endpointForm: EndpointForm2): Endpoint {
   // TODO: millis can be undefined! won't work right now
   let minResponseMillis: number | undefined = undefined
   let maxResponseMillis: number | undefined = undefined
-  if(sleepTimeData.sleepType !== 'none' ) {
-    minResponseMillis = validateNumber(sleepTimeData.min)
+  if (endpointForm.sleepTime.sleepType !== 'none') {
+    minResponseMillis = validateNumber(endpointForm.sleepTime.min)
   }
-  if(sleepTimeData.sleepType === 'range') {
-    maxResponseMillis = validateNumber(sleepTimeData.max)
+  if (endpointForm.sleepTime.sleepType === 'range') {
+    maxResponseMillis = validateNumber(endpointForm.sleepTime.max)
   }
-  const statusCode = validateNumber(endpointForm.statusCode)
+  const statusCode = validateNumber(endpointForm.main.statusCode)
 
   return {
-    ...endpointForm,
+    ...endpointForm.main,
     minResponseMillis,
     maxResponseMillis,
-    statusCode
+    statusCode,
+    headers: {} // TODO fix this
   }
 }
 
