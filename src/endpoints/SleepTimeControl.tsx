@@ -6,13 +6,13 @@ import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import { useEffect, useState } from 'react';
 import { FieldItem } from '../design/form-fields';
-import { defaultEndpointForm2, SleepTimeForm } from '../model/endpoint-form.model';
+import { defaultEndpointForm, SleepTimeForm } from '../model/endpoint-form.model';
 
 
 export type SleepType = 'none' | 'fixed' | 'range'
 export type SleepTime = { min: string, max: string }
 
-export function SleepTimeControl(props: { sleepTimeData: SleepTimeForm, onChange: (sleepTimeData: SleepTimeForm) => void }) {
+export function SleepTimeControl(props: { sleepTimeData: SleepTimeForm, isUpdate: boolean, onChange: (sleepTimeData: SleepTimeForm) => void }) {
   const { onChange } = props
   const [currentSleepTimeData, setCurrentSleepTimeData] = useState<SleepTimeForm>(props.sleepTimeData)
   const [initDone, setInitDone] = useState(false)
@@ -23,7 +23,7 @@ export function SleepTimeControl(props: { sleepTimeData: SleepTimeForm, onChange
    * Ideally there's another way to do that.
    */
   useEffect(() => {
-    if (!!initDone || props.sleepTimeData === defaultEndpointForm2.sleepTime) {
+    if (!!initDone || (props.sleepTimeData === defaultEndpointForm.sleepTime && props.isUpdate)) {
       return
     }
     setCurrentSleepTimeData(props.sleepTimeData)

@@ -1,9 +1,9 @@
 import { beautifyJson } from "../design/format.utils";
 import { SleepTime, SleepType } from "../endpoints/SleepTimeControl";
-import { EndpointForm2 } from "../model/endpoint-form.model";
+import { EndpointForm, HeadersForm } from "../model/endpoint-form.model";
 import { Endpoint } from "../model/endpoint.model";
 
-export function transformToForm(endpoint: Endpoint): EndpointForm2 {
+export function transformToForm(endpoint: Endpoint): EndpointForm {
   const min = endpoint.minResponseMillis?.toString() || ''
   const max = endpoint.maxResponseMillis?.toString() || ''
 
@@ -12,7 +12,9 @@ export function transformToForm(endpoint: Endpoint): EndpointForm2 {
     path: endpoint.path,
     returnValue: beautifyJson(endpoint.returnValue),
     statusCode: endpoint.statusCode.toString(),
+    headers: endpoint.headers
   }
+  const headers = transformHeadersToForm(endpoint.headers)
   const sleepTime = {
     sleepType: inferSleepType({ min, max }),
     max,
@@ -20,17 +22,12 @@ export function transformToForm(endpoint: Endpoint): EndpointForm2 {
   }
   return {
     main,
-    sleepTime,
-    // ...endpoint,
-    // statusCode: endpoint.statusCode.toString(),
-    // returnValue: beautifyJson(endpoint.returnValue),
-    // sleepType: inferSleepType({ min, max }),
-    // maxResponseMillis: max,
-    // minResponseMillis: min
+    headers,
+    sleepTime
   }
 }
 
-export function transformToEndpoint(endpointForm: EndpointForm2): Endpoint {
+export function transformToEndpoint(endpointForm: EndpointForm): Endpoint {
   // TODO: millis can be undefined! won't work right now
   let minResponseMillis: number | undefined = undefined
   let maxResponseMillis: number | undefined = undefined
@@ -41,13 +38,13 @@ export function transformToEndpoint(endpointForm: EndpointForm2): Endpoint {
     maxResponseMillis = validateNumber(endpointForm.sleepTime.max)
   }
   const statusCode = validateNumber(endpointForm.main.statusCode)
-
+  const headers = transformHeadersToEndpoint(endpointForm.headers)
   return {
     ...endpointForm.main,
     minResponseMillis,
     maxResponseMillis,
     statusCode,
-    headers: {} // TODO fix this
+    headers
   }
 }
 
@@ -70,4 +67,19 @@ function inferSleepType(sleepTime: SleepTime): SleepType {
     return 'fixed'
   }
   return 'none'
+}
+
+function transformHeadersToEndpoint(headersForm: HeadersForm): {
+  [key: string]: string;
+} {
+  return headersForm.reduce(
+    (object, item) =>
+      Object.assign(object, { [item.headerName]: item.headerValue }),
+    {}
+  );
+}
+function transformHeadersToForm(headersEndpoint: {[key: string]: string}): HeadersForm {
+  return Object.entries(headersEndpoint).map(
+    ([headerName, headerValue], index) => ({ index, headerName, headerValue })
+  );
 }

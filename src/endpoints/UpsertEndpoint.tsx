@@ -1,41 +1,37 @@
 import { Button } from "@mui/material"
 import { useEffect, useState } from "react"
 import styled from "styled-components"
-import { FieldItem, FieldRow } from "../design/form-fields"
-import { defaultEndpointForm2, EndpointForm2, MainForm, SleepTimeForm } from "../model/endpoint-form.model"
+import { FieldItem, FieldRow, Form } from "../design/form-fields"
+import { defaultEndpointForm as defaultEndpointForm, EndpointForm, HeadersForm, MainForm, SleepTimeForm } from "../model/endpoint-form.model"
 import { Endpoint, PersistedEndpoint } from "../model/endpoint.model"
 import { transformToEndpoint, transformToForm } from "../services/form-transformations"
 import { showEndpoint, submitCreateEndpointAsync, submitUpdateEndpointAsync } from "../state/endpointsSlice"
 import { useAppDispatch } from "../state/hooks"
+import { HeadersControl } from "./HeadersControl"
 import { MainControl } from "./MainControl"
 import { SleepTimeControl } from "./SleepTimeControl"
 
 
-
-const Form = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between ;
-  height: 100%;
-`
-
 export function UpsertEndpoint(props: { persistedEndpoint?: PersistedEndpoint }) {
   const dispatch = useAppDispatch()
   const { persistedEndpoint } = props
-  const [endpointForm, setEndpointForm] = useState<EndpointForm2>(defaultEndpointForm2)
-  const [mainDataControl, setMainDataControl] = useState<MainForm>(defaultEndpointForm2.main)
-  const [sleepTimeDataControl, setSleepTimeDataControl] = useState<SleepTimeForm>(defaultEndpointForm2.sleepTime)
+  const [endpointForm, setEndpointForm] = useState<EndpointForm>(defaultEndpointForm)
+  const [mainDataControl, setMainDataControl] = useState<MainForm>(defaultEndpointForm.main)
+  const [sleepTimeDataControl, setSleepTimeDataControl] = useState<SleepTimeForm>(defaultEndpointForm.sleepTime)
+  const [headersDataControl, setHeadersDataControl] = useState<HeadersForm>(defaultEndpointForm.headers)
 
   useEffect(() => {
     if (!!persistedEndpoint) {
-      const endpointForm2 = transformToForm(persistedEndpoint)
-      setEndpointForm(endpointForm2)
-      setMainDataControl(endpointForm2.main)
-      setSleepTimeDataControl(endpointForm2.sleepTime)
+      const endpointForm = transformToForm(persistedEndpoint)
+      setEndpointForm(endpointForm)
+      setMainDataControl(endpointForm.main)
+      setHeadersDataControl(endpointForm.headers)
+      setSleepTimeDataControl(endpointForm.sleepTime)
     } else {
-      setEndpointForm(defaultEndpointForm2)
-      setMainDataControl(defaultEndpointForm2.main)
-      setSleepTimeDataControl(defaultEndpointForm2.sleepTime)
+      setEndpointForm(defaultEndpointForm)
+      setMainDataControl(defaultEndpointForm.main)
+      setHeadersDataControl(defaultEndpointForm.headers)
+      setSleepTimeDataControl(defaultEndpointForm.sleepTime)
     }
   }, [persistedEndpoint])
 
@@ -45,19 +41,22 @@ export function UpsertEndpoint(props: { persistedEndpoint?: PersistedEndpoint })
    */
   const handleCancel: () => void = () => dispatch(showEndpoint(persistedEndpoint!.id))
   const handleCreate: () => void = () => {
-    const formAsEndpoint = transformToEndpoint({ main: mainDataControl, sleepTime: sleepTimeDataControl }) // might throw
+    const formAsEndpoint = transformToEndpoint({ main: mainDataControl, headers: headersDataControl, sleepTime: sleepTimeDataControl }) // might throw
     dispatch(submitCreateEndpointAsync({ endpoint: formAsEndpoint }))
   }
   const handleUpdate: () => void = () => {
-    const formAsEndpoint = transformToEndpoint({ main: mainDataControl, sleepTime: sleepTimeDataControl }) // might throw
-    dispatch(submitUpdateEndpointAsync({ id: persistedEndpoint!.id, endpoint: formAsEndpoint }))
+    const formAsEndpoint = transformToEndpoint({
+      main: mainDataControl,
+      headers: headersDataControl,
+      sleepTime: sleepTimeDataControl,
+    }); // might throw
+    dispatch(
+      submitUpdateEndpointAsync({
+        id: persistedEndpoint!.id,
+        endpoint: formAsEndpoint,
+      })
+    );
   }
-
-  function handleChangeValue(key: keyof Endpoint) {
-    return (event: React.ChangeEvent<HTMLInputElement>) => {
-      setMainDataControl({ ...mainDataControl, [key]: event.target.value });
-    }
-  };
 
   function Controls() {
     if (!!persistedEndpoint) {
@@ -87,9 +86,22 @@ export function UpsertEndpoint(props: { persistedEndpoint?: PersistedEndpoint })
   return (
     <Form>
       <div>
-        <MainControl mainData={endpointForm.main} onChange={setMainDataControl} />
+        <MainControl
+          mainData={endpointForm.main}
+          isUpdate={!!persistedEndpoint}
+          onChange={setMainDataControl}
+        />
+        <HeadersControl
+          headersData={endpointForm.headers}
+          isUpdate={!!persistedEndpoint}
+          onChange={setHeadersDataControl}
+        />
         <FieldRow justifyContent="start">
-          <SleepTimeControl sleepTimeData={endpointForm.sleepTime} onChange={setSleepTimeDataControl} />
+          <SleepTimeControl
+            sleepTimeData={endpointForm.sleepTime}
+            isUpdate={!!persistedEndpoint}
+            onChange={setSleepTimeDataControl}
+          />
         </FieldRow>
       </div>
       <div>
@@ -98,5 +110,5 @@ export function UpsertEndpoint(props: { persistedEndpoint?: PersistedEndpoint })
         </FieldRow>
       </div>
     </Form>
-  )
+  );
 }

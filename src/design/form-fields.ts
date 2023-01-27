@@ -12,3 +12,10 @@ export const FieldItem = styled.div<{ flex: number | string }>`
   }
   flex: ${props => props.flex};
 `
+
+export const Form = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between ;
+  height: 100%;
+`

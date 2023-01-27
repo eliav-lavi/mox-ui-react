@@ -1,20 +1,23 @@
 import { MenuItem, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 import { FieldItem, FieldRow } from "../design/form-fields";
-import { defaultEndpointForm2, MainForm } from "../model/endpoint-form.model";
+import { defaultEndpointForm, MainForm } from "../model/endpoint-form.model";
 
 
 const verbs = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']
 
-export function MainControl(props: { mainData: MainForm, onChange: (mainForm: MainForm) => void }) {
+export function MainControl(props: { mainData: MainForm, isUpdate: boolean, onChange: (mainForm: MainForm) => void }) {
   const { onChange } = props
   const [data, setData] = useState<MainForm>(props.mainData)
   const [initDone, setInitDone] = useState(false)
 
   useEffect(() => {
-    if (!!initDone || props.mainData === defaultEndpointForm2.main) {
+    console.log("init done " + !!initDone)
+    console.log("default data " + (props.mainData === defaultEndpointForm.main))
+    if (!!initDone || (props.mainData === defaultEndpointForm.main && props.isUpdate)) {
       return
     }
+    console.log("hi")
     setData(props.mainData)
     setInitDone(true)
   }, [props, initDone])
