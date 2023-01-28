@@ -28,6 +28,23 @@ const Footer = styled.div`
   padding-right: 20px;
 `;
 
+const ConsoleWrapper = styled.div`
+  display: flex;
+  height: 85%;
+  margin: 20px 120px;
+  padding: 20px;
+`
+const Console = styled.div`
+  flex: auto;
+  display: flex;
+  flex-direction: row;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: ${Color.Gray100};
+  border-style: solid;
+  border-width: 1px;
+`
+
 function App() {
   return (
     <Provider store={store}>
@@ -35,11 +52,15 @@ function App() {
         <Container>
           <Header />
           <Content>
-            <Routes>
-              <Route path="/" element={<EndpointsTable />}></Route>
-              <Route path="/endpoints" element={<EndpointsTable />}></Route>
-              <Route path="/config" element={<div>Config!</div>}></Route>
-            </Routes>
+            <ConsoleWrapper>
+              <Console>
+                <Routes>
+                  <Route path="/" element={<EndpointsTable />}></Route>
+                  <Route path="/endpoints" element={<EndpointsTable />}></Route>
+                  <Route path="/config" element={<div>Config!</div>}></Route>
+                </Routes>
+              </Console>
+            </ConsoleWrapper>
           </Content>
           <Footer>
             <Typography variant="caption">

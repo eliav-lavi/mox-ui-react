@@ -7,6 +7,7 @@ import { useAppDispatch, useAppSelector } from "./state/hooks";
 import { toggle } from "./state/configSlice";
 import { Color } from "./design/colors";
 import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 const HeaderWrapper = styled.div`
   background-color: ${Color.Gray200};
@@ -19,8 +20,18 @@ const HeaderWrapper = styled.div`
   align-items: center;
 `;
 
-const MenuItem = styled.div`
+const MenuItem = styled(NavLink)`
   padding-right: 10px;
+  text-decoration: none;
+  &:visited {
+    color: inherit;
+  }
+  &:hover {
+    color: ${Color.Purple400}
+  }
+  &:focus {
+    color: ${Color.Purple300}
+  }
 `;
 
 const menuItems: Array<{ label: string; link: string }> = [
@@ -29,6 +40,10 @@ const menuItems: Array<{ label: string; link: string }> = [
   { label: "export", link: "/export" },
   { label: "import", link: "/import" },
 ];
+
+const activeStyle = {
+  color: "red",
+};
 
 export function Header() {
   const isDarkModeEnabled = useAppSelector(
@@ -51,8 +66,8 @@ export function Header() {
       >
         {menuItems.map((menuItem, i) => {
           return (
-            <MenuItem key={i}>
-              <Link to={menuItem.link}>{menuItem.label}</Link>
+            <MenuItem key={i} to={menuItem.link}>
+              <code>{menuItem.label}</code>
             </MenuItem>
           );
         })}
