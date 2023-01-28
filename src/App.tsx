@@ -1,11 +1,12 @@
 import { Provider } from "react-redux";
-import { store } from "./state/store";
 import styled from "styled-components";
+import { store } from "./state/store";
 
-import { Header } from "./Header";
-import { EndpointsTable } from "./endpoints/EndpointsTable";
-import { Color } from "./design/colors";
 import { Typography } from "@mui/material";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { Color } from "./design/colors";
+import { EndpointsTable } from "./endpoints/EndpointsTable";
+import { Header } from "./Header";
 
 const Container = styled.div`
   display: flex;
@@ -30,17 +31,23 @@ const Footer = styled.div`
 function App() {
   return (
     <Provider store={store}>
-      <Container>
-        <Header />
-        <Content>
-          <EndpointsTable />
-        </Content>
-        <Footer>
-          <Typography variant="caption">
-            <code>eliavlavi {new Date().getFullYear()}</code>
-          </Typography>
-        </Footer>
-      </Container>
+      <BrowserRouter>
+        <Container>
+          <Header />
+          <Content>
+            <Routes>
+              <Route path="/" element={<EndpointsTable />}></Route>
+              <Route path="/endpoints" element={<EndpointsTable />}></Route>
+              <Route path="/config" element={<div>Config!</div>}></Route>
+            </Routes>
+          </Content>
+          <Footer>
+            <Typography variant="caption">
+              <code>eliavlavi {new Date().getFullYear()}</code>
+            </Typography>
+          </Footer>
+        </Container>
+      </BrowserRouter>
     </Provider>
   );
 }

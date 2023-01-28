@@ -6,6 +6,7 @@ import ModeNightIcon from "@mui/icons-material/ModeNight";
 import { useAppDispatch, useAppSelector } from "./state/hooks";
 import { toggle } from "./state/configSlice";
 import { Color } from "./design/colors";
+import { Link } from "react-router-dom";
 
 const HeaderWrapper = styled.div`
   background-color: ${Color.Gray200};
@@ -19,14 +20,14 @@ const HeaderWrapper = styled.div`
 `;
 
 const MenuItem = styled.div`
-padding-right: 10px ;
+  padding-right: 10px;
 `;
 
-const menuItems: Array<{ label: string }> = [
-  { label: "endpoints" },
-  { label: "config" },
-  { label: "export" },
-  { label: "import" },
+const menuItems: Array<{ label: string; link: string }> = [
+  { label: "endpoints", link: "/endpoints" },
+  { label: "config", link: "/config" },
+  { label: "export", link: "/export" },
+  { label: "import", link: "/import" },
 ];
 
 export function Header() {
@@ -40,9 +41,20 @@ export function Header() {
       <div style={{ flex: 30 }}>
         <code> m o x</code>
       </div>
-      <div style={{ flex: 8, display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
+      <div
+        style={{
+          flex: 8,
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+        }}
+      >
         {menuItems.map((menuItem, i) => {
-          return <MenuItem key={i}>{menuItem.label}</MenuItem>;
+          return (
+            <MenuItem key={i}>
+              <Link to={menuItem.link}>{menuItem.label}</Link>
+            </MenuItem>
+          );
         })}
       </div>
       <div style={{ display: "flex", flex: 1 }}>
