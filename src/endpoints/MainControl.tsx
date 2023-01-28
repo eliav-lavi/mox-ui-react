@@ -12,12 +12,11 @@ export function MainControl(props: { mainData: MainForm, isUpdate: boolean, onCh
   const [initDone, setInitDone] = useState(false)
 
   useEffect(() => {
-    console.log("init done " + !!initDone)
-    console.log("default data " + (props.mainData === defaultEndpointForm.main))
+    // console.log("init done " + !!initDone)
+    // console.log("default data " + (props.mainData === defaultEndpointForm.main))
     if (!!initDone || (props.mainData === defaultEndpointForm.main && props.isUpdate)) {
       return
     }
-    console.log("hi")
     setData(props.mainData)
     setInitDone(true)
   }, [props, initDone])

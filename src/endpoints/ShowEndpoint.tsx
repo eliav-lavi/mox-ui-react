@@ -1,32 +1,25 @@
 import SettingsEthernetOutlinedIcon from "@mui/icons-material/SettingsEthernetOutlined";
 import TimerOutlinedIcon from "@mui/icons-material/TimerOutlined";
 import {
-  Button,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Typography,
+  Button, Typography
 } from "@mui/material";
 import { useEffect, useState } from "react";
+import styled from "styled-components";
+import { Color } from "../design/colors";
+import { Ellipsis } from "../design/CopyableTooltip";
 import { FieldItem, FieldRow, Form } from "../design/form-fields";
 import {
   defaultEndpointForm,
   EndpointForm,
-  HeadersForm,
+  HeadersForm
 } from "../model/endpoint-form.model";
 import { PersistedEndpoint } from "../model/endpoint.model";
 import { transformToForm } from "../services/form-transformations";
 import {
   editEndpoint,
-  submitDeleteEndpointAsync,
+  submitDeleteEndpointAsync
 } from "../state/endpointsSlice";
 import { useAppDispatch } from "../state/hooks";
-import styled from "styled-components";
-import { Ellipsis } from "../design/CopyableTooltip";
 
 export function ShowEndpoint(props: { persistedEndpoint: PersistedEndpoint }) {
   const dispatch = useAppDispatch();
@@ -116,15 +109,32 @@ export function ShowEndpoint(props: { persistedEndpoint: PersistedEndpoint }) {
   );
 }
 
-const HeadersTableTable = styled.table``;
+const HeadersTableTable = styled.table`
+  border-collapse: collapse;
+  margin: 25px 0;
+  font-size: 0.9em;
+  min-width: 400px;
+  box-shadow: 0 0 20px ${Color.Gray300};;
+`;
 const HeadersTableHead = styled.thead``;
 const HeadersTableBody = styled.tbody``;
 const HeadersTableHeader = styled.th`
+  background-color: ${Color.Gray200};
+  color: ${Color.Black};
   text-align: left;
 `;
-const HeadersTableRow = styled.tr``;
+const HeadersTableRow = styled.tr`
+  border-bottom: 1px solid ${Color.Gray300};;
+  &:nth-of-type(even) {
+    background-color: ${Color.Purple50};;
+  }
+  &:last-of-type {
+    border-bottom: 2px solid ${Color.Gray300};
+  }
+`;
 const HeadersTableData = styled.td`
   font-family: monospace;
+  padding: 12px 15px;
 `;
 
 function HeadersTable(props: { headers: HeadersForm }) {
@@ -134,18 +144,20 @@ function HeadersTable(props: { headers: HeadersForm }) {
   }
   return (
     <HeadersTableTable>
-      <HeadersTableHead>
+      {/* <HeadersTableHead>
         <HeadersTableRow>
           <HeadersTableHeader>Header Name</HeadersTableHeader>
           <HeadersTableHeader>Header Value</HeadersTableHeader>
         </HeadersTableRow>
-      </HeadersTableHead>
+      </HeadersTableHead> */}
       <HeadersTableBody>
-        {headers.map((row) => (
-          <HeadersTableRow key={row.index}>
-            <HeadersTableData>{row.headerName}</HeadersTableData>
+        {headers.map((header, i) => (
+          <HeadersTableRow key={i}>
             <HeadersTableData>
-              <Ellipsis content={row.headerValue} maxLength={10} />
+              <Ellipsis content={header.headerName} maxLength={15} />
+            </HeadersTableData>
+            <HeadersTableData>
+              <Ellipsis content={header.headerValue} maxLength={15} />
             </HeadersTableData>
           </HeadersTableRow>
         ))}

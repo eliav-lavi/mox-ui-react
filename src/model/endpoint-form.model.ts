@@ -20,7 +20,7 @@ export interface SleepTimeForm {
 }
 
 
-export type HeaderForm = {index: number, headerName: string, headerValue: string}
+export type HeaderForm = {headerName: string, headerValue: string}
 export type HeadersForm = Array<HeaderForm>
 
 export const defaultEndpointForm: EndpointForm = {
