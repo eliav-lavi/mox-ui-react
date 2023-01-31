@@ -4,10 +4,9 @@ import {
   Button, Typography
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import styled from "styled-components";
-import { Color } from "../design/colors";
 import { Ellipsis } from "../design/CopyableTooltip";
 import { FieldItem, FieldRow, Form } from "../design/form-fields";
+import { Table, TableBody, TableData, TableRow } from "../design/table";
 import {
   defaultEndpointForm,
   EndpointForm,
@@ -109,33 +108,6 @@ export function ShowEndpoint(props: { persistedEndpoint: PersistedEndpoint }) {
   );
 }
 
-const HeadersTableTable = styled.table`
-  border-collapse: collapse;
-  margin: 25px 0;
-  font-size: 0.9em;
-  min-width: 400px;
-  box-shadow: 0 0 20px ${Color.Gray300};;
-`;
-const HeadersTableHead = styled.thead``;
-const HeadersTableBody = styled.tbody``;
-const HeadersTableHeader = styled.th`
-  background-color: ${Color.Gray200};
-  color: ${Color.Black};
-  text-align: left;
-`;
-const HeadersTableRow = styled.tr`
-  border-bottom: 1px solid ${Color.Gray300};;
-  &:nth-of-type(even) {
-    background-color: ${Color.Purple50};;
-  }
-  &:last-of-type {
-    border-bottom: 2px solid ${Color.Gray300};
-  }
-`;
-const HeadersTableData = styled.td`
-  font-family: monospace;
-  padding: 12px 15px;
-`;
 
 function HeadersTable(props: { headers: HeadersForm }) {
   const { headers } = props;
@@ -143,25 +115,19 @@ function HeadersTable(props: { headers: HeadersForm }) {
     return <></>;
   }
   return (
-    <HeadersTableTable>
-      {/* <HeadersTableHead>
-        <HeadersTableRow>
-          <HeadersTableHeader>Header Name</HeadersTableHeader>
-          <HeadersTableHeader>Header Value</HeadersTableHeader>
-        </HeadersTableRow>
-      </HeadersTableHead> */}
-      <HeadersTableBody>
+    <Table>
+      <TableBody>
         {headers.map((header, i) => (
-          <HeadersTableRow key={i}>
-            <HeadersTableData>
+          <TableRow key={i}>
+            <TableData>
               <Ellipsis content={header.headerName} maxLength={15} />
-            </HeadersTableData>
-            <HeadersTableData>
+            </TableData>
+            <TableData>
               <Ellipsis content={header.headerValue} maxLength={15} />
-            </HeadersTableData>
-          </HeadersTableRow>
+            </TableData>
+          </TableRow>
         ))}
-      </HeadersTableBody>
-    </HeadersTableTable>
+      </TableBody>
+    </Table>
   );
 }

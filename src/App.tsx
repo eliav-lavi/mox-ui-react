@@ -7,6 +7,9 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Color } from "./design/colors";
 import { EndpointsTable } from "./endpoints/EndpointsTable";
 import { Header } from "./Header";
+import { Export } from "./transfer/Export";
+import { Import } from "./transfer/Import";
+import { Config } from "./Config";
 
 const Container = styled.div`
   display: flex;
@@ -57,7 +60,9 @@ function App() {
                 <Routes>
                   <Route path="/" element={<EndpointsTable />}></Route>
                   <Route path="/endpoints" element={<EndpointsTable />}></Route>
-                  <Route path="/config" element={<div>Config!</div>}></Route>
+                  <Route path="/config" element={<Config/>}></Route>
+                  <Route path="/export" element={<Export/>}></Route>
+                  <Route path="/import" element={<Import/>}></Route>
                 </Routes>
               </Console>
             </ConsoleWrapper>

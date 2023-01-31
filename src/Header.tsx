@@ -27,7 +27,7 @@ const MenuItem = styled(NavLink)`
     color: inherit;
   }
   &:hover {
-    color: ${Color.Purple400}
+    color: ${Color.Purple200}
   }
   &:focus {
     color: ${Color.Purple300}
@@ -41,9 +41,6 @@ const menuItems: Array<{ label: string; link: string }> = [
   { label: "import", link: "/import" },
 ];
 
-const activeStyle = {
-  color: "red",
-};
 
 export function Header() {
   const isDarkModeEnabled = useAppSelector(

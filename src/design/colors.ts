@@ -3,7 +3,6 @@ export enum Color  {
   Gray200 = '#e2e2e252',
   Gray300 = '#e1e2e1',
   Gray400 = 'gray',
-  Purple50 = '#eee4f985',
   Purple100 = '#eee4f9',
   Purple200 = '#e4d5f4',
   Purple300 = '#9886ac',

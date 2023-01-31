@@ -4,13 +4,14 @@ import { Endpoint, PersistedEndpoint } from "../model/endpoint.model";
 import camelcaseKeys from 'camelcase-keys';
 import snakecaseKeys from 'snakecase-keys';
 
+// TODO: use something else other than `deep` in all these - this is bug-prone.
+
 export async function fetchEndpoints(): Promise<{ data: PersistedEndpoint[] }> {
   return await axios
     .get<void, AxiosResponse<{ response: PersistedEndpoint[] }>>('http://localhost:9898/endpoint')
     .then(r => ({ data: camelcaseKeys(r.data.response, { deep: false }) }))
 }
 
-// TODO: use something else other than `deep` - this is bug-prone.
 export async function createEndpoint(endpoint: Endpoint): Promise<{ data: PersistedEndpoint }> {
   return await axios
     .post<void, AxiosResponse<{ response: PersistedEndpoint }>>(`http://localhost:9898/endpoint`, snakecaseKeys(endpoint, { deep: false }))
