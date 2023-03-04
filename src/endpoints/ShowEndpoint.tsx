@@ -1,8 +1,6 @@
 import SettingsEthernetOutlinedIcon from "@mui/icons-material/SettingsEthernetOutlined";
 import TimerOutlinedIcon from "@mui/icons-material/TimerOutlined";
-import {
-  Button, Typography
-} from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Ellipsis } from "../design/CopyableTooltip";
 import { FieldItem, FieldRow, Form } from "../design/form-fields";
@@ -10,13 +8,13 @@ import { Table, TableBody, TableData, TableRow } from "../design/table";
 import {
   defaultEndpointForm,
   EndpointForm,
-  HeadersForm
+  HeadersForm,
 } from "../model/endpoint-form.model";
 import { PersistedEndpoint } from "../model/endpoint.model";
 import { transformToForm } from "../services/form-transformations";
 import {
   editEndpoint,
-  submitDeleteEndpointAsync
+  submitDeleteEndpointAsync,
 } from "../state/endpointsSlice";
 import { useAppDispatch } from "../state/hooks";
 
@@ -29,8 +27,15 @@ export function ShowEndpoint(props: { persistedEndpoint: PersistedEndpoint }) {
 
   const handleEdit: () => void = () =>
     dispatch(editEndpoint(persistedEndpoint.id));
-  const handleDelete: () => void = () =>
+  const handleDelete: () => void = () => {
+    const confirmed = window.confirm(
+      `Delete endpoint ${persistedEndpoint.verb} ${persistedEndpoint.path}?`
+    );
+    if(!confirmed) {
+      return;
+    }
     dispatch(submitDeleteEndpointAsync({ id: persistedEndpoint.id }));
+  };
 
   useEffect(() => {
     setEndpointData(transformToForm(persistedEndpoint));
@@ -107,7 +112,6 @@ export function ShowEndpoint(props: { persistedEndpoint: PersistedEndpoint }) {
     </Form>
   );
 }
-
 
 function HeadersTable(props: { headers: HeadersForm }) {
   const { headers } = props;
