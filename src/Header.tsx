@@ -1,13 +1,7 @@
-import Switch from "@mui/material/Switch";
 import styled from "styled-components";
 
-import LightModeIcon from "@mui/icons-material/LightMode";
-import ModeNightIcon from "@mui/icons-material/ModeNight";
-import { useAppDispatch, useAppSelector } from "./state/hooks";
-import { toggle } from "./state/configSlice";
-import { Color } from "./design/colors";
-import { Link } from "react-router-dom";
 import { NavLink } from "react-router-dom";
+import { Color } from "./design/colors";
 
 const HeaderWrapper = styled.div`
   background-color: ${Color.Gray200};
@@ -43,10 +37,6 @@ const menuItems: Array<{ label: string; link: string }> = [
 
 
 export function Header() {
-  const isDarkModeEnabled = useAppSelector(
-    (state) => state.configs.isDarkModeEnabled
-  );
-  const dispatch = useAppDispatch();
 
   return (
     <HeaderWrapper>
@@ -68,18 +58,6 @@ export function Header() {
             </MenuItem>
           );
         })}
-      </div>
-      <div style={{ display: "flex", flex: 1 }}>
-        <Switch
-          size={"small"}
-          checked={isDarkModeEnabled}
-          onChange={() => dispatch(toggle())}
-        />
-        {isDarkModeEnabled ? (
-          <ModeNightIcon fontSize="small" />
-        ) : (
-          <LightModeIcon fontSize="small" />
-        )}
       </div>
     </HeaderWrapper>
   );
