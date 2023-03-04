@@ -59,7 +59,6 @@ interface ImportedEndpoint {
   endpoint: Endpoint;
   id: string;
   checked: boolean;
-  conflicts: boolean;
 }
 
 export function Import() {
@@ -127,6 +126,8 @@ export function Import() {
     };
   }
 
+  const selectedCount = importedEndpoints.filter(endpoint => endpoint.checked).length
+
   return (
     <>
       <PanelMargins>
@@ -137,7 +138,7 @@ export function Import() {
                 Please upload an exported <code>mox</code> JSON to begin.
               </div>
             ) : (
-              <div>Please select the endpoints you would like to apply.</div>
+              <div>Please select the endpoints you would like to import.</div>
             )}
           </FieldRow>
           <FieldRow>
@@ -226,8 +227,9 @@ export function Import() {
                     color="primary"
                     component="label"
                     onClick={handleApply}
+                    disabled={!selectedCount}
                   >
-                    Apply
+                    Import {selectedCount} Endpoints
                   </Button>
                 </FieldItem>
               </>
