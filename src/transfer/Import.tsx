@@ -14,6 +14,7 @@ import {
 import { useAppDispatch } from "../state/hooks";
 import { submitCreateEndpointAsync } from "../state/endpointsSlice";
 import { useNavigate } from "react-router-dom";
+import { ControlsFieldRow, FieldRow, PanelMargins } from "./common";
 
 function FileUploadSingle(props: {
   setFile: (s: string) => void;
@@ -44,16 +45,16 @@ function FileUploadSingle(props: {
   );
 }
 
-const PanelMargins = styled.div`
-  padding: 20px;
-  display: flex;
-  width: 100%;
-`;
+// const PanelMargins = styled.div`
+//   padding: 20px;
+//   display: flex;
+//   width: 100%;
+// `;
 
-const FieldRow = styled(GeneralFieldRow)`
-  overflow-y: scroll;
-  margin-bottom: 10px;
-`;
+// const FieldRow = styled(GeneralFieldRow)`
+//   overflow-y: scroll;
+//   margin-bottom: 10px;
+// `;
 
 interface ImportedEndpoint {
   endpoint: Endpoint;
@@ -192,7 +193,7 @@ export function Import() {
               </Table>
             )}
           </FieldRow>
-          <FieldRow justifyContent="space-between">
+          <ControlsFieldRow justifyContent="space-between">
             <FieldItem flex={0}>
               {!importedEndpoints.length ? (
                 <>
@@ -234,7 +235,7 @@ export function Import() {
                 </FieldItem>
               </>
             )}
-          </FieldRow>
+          </ControlsFieldRow>
         </Form>
       </PanelMargins>
     </>

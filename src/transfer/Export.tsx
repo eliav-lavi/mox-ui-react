@@ -4,7 +4,7 @@ import { Ellipsis } from "../design/CopyableTooltip";
 import { FieldItem, Form } from "../design/form-fields";
 import { Table, TableBody, TableData, TableRow } from "../design/table";
 import { useAppSelector } from "../state/hooks";
-import { FieldRow, PanelMargins } from "./common";
+import { ControlsFieldRow, FieldRow, PanelMargins } from "./common";
 
 export function Export() {
   const allEndpoints = useAppSelector((state) => state.endpoints.endpoints);
@@ -115,7 +115,7 @@ export function Export() {
               </Table>
             )}
           </FieldRow>
-          <FieldRow justifyContent="end">
+          <ControlsFieldRow justifyContent="end">
             {!!allEndpoints.length && (
               <>
                 <FieldItem flex={"0 1 auto"}>
@@ -140,7 +140,7 @@ export function Export() {
                 </FieldItem>
               </>
             )}
-          </FieldRow>
+          </ControlsFieldRow>
         </Form>
       </PanelMargins>
     </>
